@@ -9,18 +9,28 @@ class Coffee:
         self.__cost = cost
         self.__price = price
         
-    def offer(self, order_cnt):
-        self.__stock -= order_cnt
-        self.__total_sales_cnt += order_cnt
+    def offer(self, order_cnt): # 글처럼 읽히는 코드가 좋은 코드다..
+        self.__deduct_stock(order_cnt)   # 재고 차감
+        self.__add_total_sales_cnt(order_cnt) # 판매량 추가 // 문장 전체 드래그 -> ctrl + shift + R -> 메소드 추가하면 됨.
         
         if self.__stock < self.__safety_stock:
-            print('[system:log] 재고가 부족해 안전재고를 확보합니다.')
-            purchase = Purchase(self, self.__safety_stock * 2)
+            # 안전재고 확보
+            self.__add_safety_stock() 
+
+    def __add_safety_stock(self):
+        print('[system:log] 재고가 부족해 안전재고를 확보합니다.')
+        purchase = Purchase(self, self.__safety_stock * 2)
             
-            if purchase.execute():
-                print('[system:log] 안전재고 확보에 성공했습니다.')
-            else:
-                print('[system:log] 안전재고 확보에 실패했습니다.')    
+        if purchase.execute():
+            print('[system:log] 안전재고 확보에 성공했습니다.')
+        else:
+            print('[system:log] 안전재고 확보에 실패했습니다.')
+
+    def __add_total_sales_cnt(self, order_cnt):
+        self.__total_sales_cnt += order_cnt   
+    
+    def __deduct_stock(self, order_cnt):
+        self.__stock -= order_cnt
     
     def add_stock(self, cnt):
         self.__stock += cnt
