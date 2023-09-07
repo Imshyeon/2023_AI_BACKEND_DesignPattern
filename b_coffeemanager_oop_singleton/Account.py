@@ -1,13 +1,19 @@
 class Account:
     __instance = None
+    __init = False
+    
+    def __new__(cls, *args, **kwargs): # => 얘가 생성하는 함수 (만약 재정의 하지 않는다면, 얘는 object꺼를 물려받은 거임)
+        if cls.__instance is None:  # 없으면 새로운 객체를 생성
+            cls.__instance = super().__new__(cls)
+        return cls.__instance
     
     def __init__(self):
         cls = type(self)
-        if cls.__instance is None:
+        if not cls.__init:
             self.__balance = 100000
             self.__sales_volumn = 0  # 매출
             self.__expenses = 0  # 지출
-            cls.__instance = self
+            cls.__init = True
         
     @classmethod
     def get_instance(cls):
