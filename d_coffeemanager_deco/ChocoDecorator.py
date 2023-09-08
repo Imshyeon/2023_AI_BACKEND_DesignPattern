@@ -1,8 +1,10 @@
 # 커피에 초코 옵션 추가
+# 상속은 is a [자식 is a 부모] : 예를 들면, Student is a Person 
 from Coffee import *
 
 class ChocoDecorator(Coffee):
     def __init__(self, coffee):
+        # private는 상속이 안됨.
         super().__init__(coffee._name, 
                          coffee._stock, 
                          coffee._total_sales_cnt, 
