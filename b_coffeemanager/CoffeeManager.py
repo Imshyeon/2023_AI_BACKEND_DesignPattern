@@ -1,4 +1,11 @@
 # OOP 적용이 되지 않은 코드
+
+# 기능확장
+# 1. 주문 금액이 10000원 이상인 주문은 10% 할인하는 정책을 추가.
+# 2. 특정 계절에만 판매할 수 있는 계절음료 추가
+#   - 계절음료는 해당 음료의 판매기간이 아니라면 '해당음료는 계절상품입니다'를 출력 후 주문 취소.
+from datetime import datetime
+
 class Coffee:
     def __init__(self, name, price, cost, stock, safety_stock, sales_cnt):
         self.name = name
@@ -17,7 +24,11 @@ def main():
     americano = Coffee("아메리카노", 3000, 2000, 10, 3, 0)  # 인스턴스화
     moca = Coffee("모카", 4000, 3000, 10, 3, 0)
     latte = Coffee("라떼", 5000, 4000, 10, 3, 0)
-    drinks = [americano, moca, latte]
+    # 자굼 6,7,8월이 아니라면 프라푸치노를 주문할 경우 '시즌 상품은 비시즌에 구매할수없습니다.' 를 출력하고 주문취소
+    # now_month = datetime.now().month
+    # 만약 시즌 음료가 11 종류이고 11 종류마다 시즌 월이 다 다르면 어떻게 확장할까?
+    frappuchino = Coffee("프라푸치노" ,5000, 4000, 10, 3, 0)
+    drinks = [americano, moca, latte, frappuchino]
 
     while True:
         print("\n=========Menu=========")
@@ -37,17 +48,31 @@ def main():
             if input_code < 0 or input_code >= len(drinks):
                 print("정확한 상품번호를 선택해 주세요.")
                 continue
-
-            if order_cnt > drinks[input_code].stock:
+            
+            now_month = datetime.now().month
+            if drinks[input_code].name == '프라푸치노':
+                if now_month not in (6,7,8):
+                    print('시즌 상품은 비시즌에 구매할 수 없습니다.')
+                    continue   
+            elif order_cnt > drinks[input_code].stock:
                 # 주문량이 재고보다 많으면 주문을 취소한다.
                 print("재고가 부족해 주문을 취소합니다.")
                 continue
-
+            
+            # 주문이 만원 이상이면 10프로 할인하자.
+            if order_cnt * drinks[input_code].price >= 10000:
+                drinks[input_code].price *= 0.9
+                balance += drinks[input_code].price * order_cnt # 잔액 추가
+                sales_price += drinks[input_code].price * order_cnt # 매출 추가                
+                print('10프로 할인 대상입니다.')
+            else:
+                balance += drinks[input_code].price * order_cnt
+                sales_price += drinks[input_code].price * order_cnt
             # 주문량이 재고보다 적거나 같으면 판매 수량만큼 재고를 차감하고,
             # 잔고에 판매 금액을 반영한다.
             drinks[input_code].stock -= order_cnt
-            balance += drinks[input_code].price * order_cnt
-            sales_price += drinks[input_code].price * order_cnt
+            # balance += drinks[input_code].price * order_cnt
+            # sales_price += drinks[input_code].price * order_cnt
             drinks[input_code].sales_cnt += order_cnt
 
             # 커피 재고가 안전재고 미만이 되면 안전재고의 두 배 만큼 매입한다.
