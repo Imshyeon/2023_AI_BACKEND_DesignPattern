@@ -50,11 +50,12 @@ def main():
                 continue
             
             now_month = datetime.now().month
-            if drinks[input_code].name == '프라푸치노':
-                if now_month not in (6,7,8):
+            if input_code == 3:
+                if now_month not in [6,7,8]:
                     print('시즌 상품은 비시즌에 구매할 수 없습니다.')
                     continue   
-            elif order_cnt > drinks[input_code].stock:
+            
+            if order_cnt > drinks[input_code].stock:
                 # 주문량이 재고보다 많으면 주문을 취소한다.
                 print("재고가 부족해 주문을 취소합니다.")
                 continue
